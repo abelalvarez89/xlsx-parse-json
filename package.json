@@ -1,0 +1,16 @@
+{
+  "name": "xls-parser",
+  "version": "1.0.10",
+  "description": "Parse xls into json",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": { "type":"git", "url":"git@github.com:abelalvarez89/xls-parser.git" },
+  "keywords": [ "xls", "office", "spreadsheet" ],
+  "author": "Abel Alvarez <abelalvarez89@hotmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "xlsx": "^0.10.3"
+  }
+}
