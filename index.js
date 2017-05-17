@@ -19,11 +19,7 @@ exports.onFileSelection = function(file) {
 		return onLoadEvent(binary, reader);
 	});
 
-	return getResult();
-};
-
-function getResult() {
-	return parsedXls;
+	return parsedXls
 };
 
 function onFileSelection(file) {

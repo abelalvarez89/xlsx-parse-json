@@ -1,16 +1,27 @@
 {
-  "name": "xls-parser",
-  "version": "1.0.10",
-  "description": "Parse xls into json",
+  "name": "xlsx-parse-json",
+  "version": "0.0.2",
+  "description": "Parse xls, xlsx into json",
   "main": "index.js",
+  "directories": {
+    "example": "example"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": { "type":"git", "url":"git@github.com:abelalvarez89/xls-parser.git" },
-  "keywords": [ "xls", "office", "spreadsheet" ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abelalvarez89/xlsx-parse-json.git"
+  },
+  "keywords": [
+    "xlsx",
+    "xls",
+    "spreadsheet"
+  ],
   "author": "Abel Alvarez <abelalvarez89@hotmail.com>",
   "license": "ISC",
-  "dependencies": {
-    "xlsx": "^0.10.3"
-  }
+  "bugs": {
+    "url": "https://github.com/abelalvarez89/xlsx-parse-json/issues"
+  },
+  "homepage": "https://github.com/abelalvarez89/xlsx-parse-json#readme"
 }
