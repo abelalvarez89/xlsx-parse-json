@@ -22,26 +22,6 @@ exports.onFileSelection = function(file) {
 	return parsedXls
 };
 
-function onFileSelection(file) {
-
-	var reader = new FileReader();
-
-	reader.readAsArrayBuffer(file);
-	reader.addEventListener('loadend', function() {
-		var binary = '';
-		var bytes = new Uint8Array(reader.result);
-
-		for (var i = 0; i < bytes.byteLength; i++) {
-			binary += String.fromCharCode(bytes[i]);
-		}
-
-		var output = onLoadEvent(binary, reader);
-
-		return output;
-	});
-
-}
-
 function onLoadEvent(binary, reader) {
 	var workbook = sheetJs.read(binary, {
 		type: 'binary'

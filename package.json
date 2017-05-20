@@ -1,7 +1,7 @@
 {
   "name": "xlsx-parse-json",
-  "version": "0.0.2",
-  "description": "Parse xls, xlsx into json",
+  "version": "0.0.3",
+  "description": "Parse csv, xls, xlsx into json",
   "main": "index.js",
   "directories": {
     "example": "example"
@@ -23,5 +23,8 @@
   "bugs": {
     "url": "https://github.com/abelalvarez89/xlsx-parse-json/issues"
   },
-  "homepage": "https://github.com/abelalvarez89/xlsx-parse-json#readme"
+  "homepage": "https://github.com/abelalvarez89/xlsx-parse-json#readme",
+  "dependencies": {
+    "xlsx": "^0.10.3"
+  }
 }

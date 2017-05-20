@@ -1,5 +1,8 @@
 # xlsx-parse-json #
 
+### Description ###
+Parse csv, xls, xlsx into json
+
 ### Install ###
 ````
 npm install xlsx-parse-json
