@@ -2,24 +2,24 @@
 var sheetJs = require('xlsx');
 var parsedXls = [];
 
-exports.onFileSelection = function(file) {
+exports.onFileSelection = function (file) {
 	parsedXls = [];
 
-	var reader = new FileReader();
+	return new Promise((resolve, reject) => {
+		var reader = new FileReader();
 
-	reader.readAsArrayBuffer(file);
-	reader.addEventListener('loadend', function() {
-		var binary = '';
-		var bytes = new Uint8Array(reader.result);
+		reader.addEventListener('loadend', function () {
+			var binary = '';
+			var bytes = new Uint8Array(reader.result);
 
-		for (var i = 0; i < bytes.byteLength; i++) {
-			binary += String.fromCharCode(bytes[i]);
-		}
+			for (var i = 0; i < bytes.byteLength; i++) {
+				binary += String.fromCharCode(bytes[i]);
+			}
 
-		return onLoadEvent(binary, reader);
+			resolve(onLoadEvent(binary, reader));
+		});
+		reader.readAsArrayBuffer(file);
 	});
-
-	return parsedXls
 };
 
 function onLoadEvent(binary, reader) {
@@ -37,7 +37,7 @@ function onLoadEvent(binary, reader) {
 	for (var R = 2; R <= lastColRow; R++) {
 		var charCode = 65;
 		var element = {};
-		headers.forEach(function(header) {
+		headers.forEach(function (header) {
 			var cellValue = worksheet[String.fromCharCode(charCode++) + R];
 			if (cellValue) {
 				element[header] = cellValue.v
@@ -47,7 +47,6 @@ function onLoadEvent(binary, reader) {
 	}
 
 	return parsedXls;
-
 }
 
 function getLastRowCol(cells) {
