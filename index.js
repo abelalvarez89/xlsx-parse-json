@@ -5,7 +5,7 @@ var parsedXls = [];
 exports.onFileSelection = function (file) {
 	parsedXls = [];
 
-	return new Promise((resolve, reject) => {
+	return new Promise(function(resolve, reject) {
 		var reader = new FileReader();
 
 		reader.addEventListener('loadend', function () {
