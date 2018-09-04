@@ -14,7 +14,7 @@ React Example
 import xlsxParser from 'xlsx-parse-json';
 
 xlsxParser
-  .onFileSelection(file)
+  .onFileSelection(file)// file is the uploaded file
   .then(data => {
     var parsedData = data;
   });
