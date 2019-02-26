@@ -1,7 +1,7 @@
 # xlsx-parse-json #
 
 ### Description ###
-Parse csv, xls, xlsx into json
+Parse csv, xls, xlsx into json. Having multiple sheets is not an issue we return and object for each sheet found. See example below for more info.
 
 ### Install ###
 ````
@@ -86,37 +86,65 @@ index.html
 </html>
 ````
 
-# input file (csv, xls, xlsx) #
+# input file #
+### Test (sheet name)
+````
+Price |  Name
+-----------------
+4     |   a
+8     |   b
+9     |   c
+4     |
+````
+
+### Sheet1 (sheet name)
 ````
 Name	| Lastname	| Age
 -------------------------
-test1	| node		| 4
-test2	| node		|
-test3	| node		| 9
-test4	| node		|
+Nico	| Jhones		| 69
+Carl	|       		| 4
+Abel	|       		| 30
+Gabe	|       		|
 
 ````
 
 # output sample #
 ````
-[
-  {
-    "Name": "test1",
-    "Lastname": "node",
-    "Age": 4
-  },
-  {
-    "Name": "test2",
-    "Lastname": "node"
-  },
-  {
-    "Name": "test3",
-    "Lastname": "node",
-    "Age": 9
-  },
-  {
-    "Name": "test4",
-    "Lastname": "node"
-  }
-]
+{
+  "Test": [
+    {
+      "Price": 4,
+      "Name": "a"
+    },
+    {
+      "Price": 8,
+      "Name": "b"
+    },
+    {
+      "Price": 9,
+      "Name": "c"
+    },
+    {
+      "Price": 4
+    }
+  ],
+  "Sheet1": [
+    {
+      "Name": "Nico",
+      "Lastname": "Jhones",
+      "Age": 69
+    },
+    {
+      "Name": "Carl",
+      "Age": 4
+    },
+    {
+      "Name": "Abel",
+      "Age": 55
+    },
+    {
+      "Name": "Gabe"
+    }
+  ]
+}
 ````

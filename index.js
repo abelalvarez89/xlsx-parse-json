@@ -1,18 +1,15 @@
 'use strict';
-var sheetJs = require('xlsx');
-var parsedXls = [];
+const sheetJs = require('xlsx');
 
-exports.onFileSelection = function (file) {
-	parsedXls = [];
+exports.onFileSelection = (file) => {
+	return new Promise((resolve, reject) => {
+		const reader = new FileReader();
 
-	return new Promise(function(resolve, reject) {
-		var reader = new FileReader();
+		reader.addEventListener('loadend', () => {
+			let binary = '';
+			const bytes = new Uint8Array(reader.result);
 
-		reader.addEventListener('loadend', function () {
-			var binary = '';
-			var bytes = new Uint8Array(reader.result);
-
-			for (var i = 0; i < bytes.byteLength; i++) {
+			for (let i = 0; i < bytes.byteLength; i++) {
 				binary += String.fromCharCode(bytes[i]);
 			}
 
@@ -22,51 +19,74 @@ exports.onFileSelection = function (file) {
 	});
 };
 
-function onLoadEvent(binary, reader) {
+const onLoadEvent = (binary, reader) => {
+	const parsedXls = {};
 	var workbook = sheetJs.read(binary, {
 		type: 'binary'
 	});
+	const sheetNames = getSheetNames(workbook);
 
-	var first_sheet_name = workbook.SheetNames[0];
-	var worksheet = workbook.Sheets[first_sheet_name];
+	sheetNames.forEach(name => {
+		const sheet = workbook.Sheets[name];
+		const desiredCells = getDesiredCells(sheet);
+		const lastColRow = getLastRowCol(desiredCells);
+		const headers = getHeaders(sheet, desiredCells);
 
-	var desired_cells = worksheet['!ref'];
-	var lastColRow = getLastRowCol(desired_cells);
-	var headers = getHeaders(worksheet, desired_cells);
-
-	for (var R = 2; R <= lastColRow; R++) {
-		var charCode = 65;
-		var element = {};
-		headers.forEach(function (header) {
-			var cellValue = worksheet[String.fromCharCode(charCode++) + R];
-			if (cellValue) {
-				element[header] = cellValue.v
-			}
-		});
-		parsedXls.push(element);
-	}
+		parsedXls[name] = getDate(lastColRow, headers, sheet);
+	});
 
 	return parsedXls;
 }
 
-function getLastRowCol(cells) {
-	var rows = cells.split(':');
-	var lastColLetter = extractLetter(rows[1]);
-	var array = rows[1].split(lastColLetter);
+const getDate = (lastColRow, headers, sheet) => {
+	const data = [];
+
+	for (let R = 2; R <= lastColRow; R++) {
+		let charCode = 65;
+		const element = {};
+
+		headers.forEach((header) => {
+			const cellValue = getValue(sheet, charCode++, R);
+
+			if (cellValue) {
+				element[header] = cellValue.v
+			}
+		});
+		if (Object.keys(element).length > 0) {
+			data.push(element);
+		}
+	}
+
+	return data;
+}
+
+const getValue = (sheet, charCode, R) => sheet[String.fromCharCode(charCode) + R];
+
+const getSheetNames = (workbook) => workbook.SheetNames;
+
+const getDesiredCells = (worksheet) => worksheet['!ref'];
+
+const getLastRowCol = (cells) => {
+	const rows = cells.split(':');
+	const lastColRow = rows.length > 1 ? rows[1] : rows[0];
+
+	const lastColLetter = extractLetter(lastColRow);
+	const array = lastColRow.split(lastColLetter);
 
 	return Number(array[1]);
 }
 
-function getHeaders(worksheet, desired_cells) {
-	var cells = desired_cells.split(':');
-	var cellHeader = cells[cells.length - 1];
-	var lastColLetter = extractLetter(cells[1]);
-	var charCode = 65;
-	var headers = [];
+const getHeaders = (worksheet, desired_cells) => {
+	const cells = desired_cells.split(':');
+	const lastCell = cells.length > 1 ? cells[1] : cells[0];
+	const lastColLetter = extractLetter(lastCell);
+	let charCode = 65;
+	const headers = [];
 
 	while (true) {
-		var currentCell = String.fromCharCode(charCode++);
-		var cellHeader = worksheet[currentCell + 1];
+		const currentCell = String.fromCharCode(charCode++);
+		const cellHeader = worksheet[currentCell + 1];
+
 		if (cellHeader) {
 			headers.push(cellHeader.v)
 		}
@@ -76,7 +96,7 @@ function getHeaders(worksheet, desired_cells) {
 	}
 }
 
-function extractLetter(str) {
-	var array = str.split(/[0-9]+/);
+const extractLetter = (str) => {
+	const array = str.split(/[0-9]+/);
 	return array[0];
 }
