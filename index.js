@@ -49,7 +49,7 @@ const getDate = (lastColRow, headers, sheet) => {
 			const cellValue = getValue(sheet, charCode++, R);
 
 			if (cellValue) {
-				element[header] = cellValue.v
+				element[header] = cellValue.w
 			}
 		});
 		if (Object.keys(element).length > 0) {
