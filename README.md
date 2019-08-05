@@ -15,7 +15,7 @@ Example
 import xlsxParser from 'xlsx-parse-json';
 
 xlsxParser
-  .onFileSelection(file
+  .onFileSelection(file)
   .then(data => {
     var parsedData = data;
   });
