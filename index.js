@@ -1,5 +1,6 @@
 'use strict';
 const sheetJs = require('xlsx');
+const abc = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
 
 exports.onFileSelection = (file) => {
 	return new Promise((resolve, reject) => {
@@ -30,23 +31,22 @@ const onLoadEvent = (binary, reader) => {
 		const sheet = workbook.Sheets[name];
 		const desiredCells = getDesiredCells(sheet);
 		const lastColRow = getLastRowCol(desiredCells);
-		const headers = getHeaders(sheet, desiredCells);
+		const columnsAndHeaders = getColumnsAndHeaders(sheet, desiredCells);
 
-		parsedXls[name] = getDate(lastColRow, headers, sheet);
+		parsedXls[name] = getData(lastColRow, columnsAndHeaders.excelColumns, columnsAndHeaders.headers, sheet);
 	});
 
 	return parsedXls;
 }
 
-const getDate = (lastColRow, headers, sheet) => {
+const getData = (lastColRow, columns, headers, sheet) => {
 	const data = [];
 
 	for (let R = 2; R <= lastColRow; R++) {
-		let charCode = 65;
 		const element = {};
 
-		headers.forEach((header) => {
-			const cellValue = getValue(sheet, charCode++, R);
+		headers.forEach((header, index) => {
+			const cellValue = getValue(sheet, columns[index], R);
 
 			if (cellValue) {
 				element[header] = cellValue.w
@@ -60,7 +60,7 @@ const getDate = (lastColRow, headers, sheet) => {
 	return data;
 }
 
-const getValue = (sheet, charCode, R) => sheet[String.fromCharCode(charCode) + R];
+const getValue = (sheet, column, R) => sheet[`${column}${R}`];
 
 const getSheetNames = (workbook) => workbook.SheetNames;
 
@@ -76,22 +76,35 @@ const getLastRowCol = (cells) => {
 	return Number(array[1]);
 }
 
-const getHeaders = (worksheet, desired_cells) => {
+const getColumnsAndHeaders = (worksheet, desired_cells) => {
 	const cells = desired_cells.split(':');
 	const lastCell = cells.length > 1 ? cells[1] : cells[0];
 	const lastColLetter = extractLetter(lastCell);
-	let charCode = 65;
+
+	let iterator = 0;
+	let accumulator = '';
+	let accumulatorIterator = 0;
 	const headers = [];
+	const excelColumns = [];
 
 	while (true) {
-		const currentCell = String.fromCharCode(charCode++);
+
+		const currentCell = `${accumulator}${abc[iterator++]}`;
 		const cellHeader = worksheet[currentCell + 1];
 
 		if (cellHeader) {
 			headers.push(cellHeader.v)
+			excelColumns.push(currentCell);
 		}
+
 		if (lastColLetter == currentCell) {
-			return headers;
+			return { headers: headers, excelColumns: excelColumns };
+		}
+
+		if (iterator >= abc.length) {
+			const test = abc[accumulatorIterator++];
+			iterator = 0;
+			accumulator = test;
 		}
 	}
 }
