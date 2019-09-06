@@ -1,6 +1,6 @@
 {
   "name": "xlsx-parse-json",
-  "version": "3.0.4",
+  "version": "3.0.5",
   "description": "Parse csv, xls, xlsx into json",
   "main": "index.js",
   "scripts": {

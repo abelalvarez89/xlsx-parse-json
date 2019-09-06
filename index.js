@@ -39,7 +39,7 @@ const onLoadEvent = (binary, reader) => {
 	return parsedXls;
 }
 
-const getData = (lastColRow, columns, headers, sheet) => {
+const getData = (lastColRow, columns, headers, sheet) => {	
 	const data = [];
 
 	for (let R = 2; R <= lastColRow; R++) {
@@ -49,7 +49,7 @@ const getData = (lastColRow, columns, headers, sheet) => {
 			const cellValue = getValue(sheet, columns[index], R);
 
 			if (cellValue) {
-				element[header] = cellValue.w
+				element[header] = cellValue.w ? cellValue.w : cellValue.v
 			}
 		});
 		if (Object.keys(element).length > 0) {
