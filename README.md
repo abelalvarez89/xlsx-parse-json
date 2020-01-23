@@ -148,3 +148,90 @@ Gabe	|       		|
   ]
 }
 ````
+
+
+### Optional Parameters
+There are optional parameters to show. They should be provided in the second argument
+````
+The default values are { showNullProperties = false, hideEmptyRows = true }
+onFileSelection = (file, { showNullProperties = false, hideEmptyRows = true })
+````
+
+Setting showNullProperties = true; will show all properties on every object example
+# input file #
+### Test (sheet name)
+````
+Price |  Name
+-----------------
+4     |   a
+8     |   b
+      |   c
+4     |
+
+````
+
+# output sample #
+````
+{
+  "Test": [
+    {
+      "Price": 4,
+      "Name": "a"
+    },
+    {
+      "Price": 8,
+      "Name": "b"
+    },
+    {
+      "Price": null,
+      "Name": "c"
+    },
+    {
+      "Price": 4
+      "Name": null
+    }
+  ]
+}
+````
+
+Setting { showNullProperties = true hideEmptyRows = false } will show all properties on every object example including empty rows with null values
+# input file #
+### Test (sheet name)
+````
+Price |  Name
+-----------------
+4     |   a
+8     |   b
+      |
+      |   c
+4     |
+
+````
+
+# output sample #
+````
+{
+  "Test": [
+    {
+      "Price": 4,
+      "Name": "a"
+    },
+    {
+      "Price": 8,
+      "Name": "b"
+    },
+    {
+      "Price": null,
+      "Name": null
+    },
+    {
+      "Price": null,
+      "Name": "c"
+    },
+    {
+      "Price": 4
+      "Name": null
+    }
+  ]
+}
+````

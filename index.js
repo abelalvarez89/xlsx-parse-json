@@ -2,7 +2,7 @@
 const sheetJs = require('xlsx');
 const abc = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
 
-exports.onFileSelection = (file) => {
+exports.onFileSelection = (file, { showNullProperties = false, hideEmptyRows = true } = {}) => {
 	return new Promise((resolve, reject) => {
 		const reader = new FileReader();
 
@@ -13,14 +13,13 @@ exports.onFileSelection = (file) => {
 			for (let i = 0; i < bytes.byteLength; i++) {
 				binary += String.fromCharCode(bytes[i]);
 			}
-
-			resolve(onLoadEvent(binary, reader));
+			resolve(onLoadEvent(binary, reader, hideEmptyRows, showNullProperties));
 		});
 		reader.readAsArrayBuffer(file);
 	});
 };
 
-const onLoadEvent = (binary, reader) => {
+const onLoadEvent = (binary, reader, hideEmptyRows, showNullProperties) => {
 	const parsedXls = {};
 	var workbook = sheetJs.read(binary, {
 		type: 'binary'
@@ -33,13 +32,33 @@ const onLoadEvent = (binary, reader) => {
 		const lastColRow = getLastRowCol(desiredCells);
 		const columnsAndHeaders = getColumnsAndHeaders(sheet, desiredCells);
 
-		parsedXls[name] = getData(lastColRow, columnsAndHeaders.excelColumns, columnsAndHeaders.headers, sheet);
+		const data = getData(lastColRow, columnsAndHeaders.excelColumns, columnsAndHeaders.headers, sheet, showNullProperties);
+		if (hideEmptyRows) {
+			const finalData = [];
+			data.forEach(element => {
+				let isEmpty = true;
+				columnsAndHeaders.headers.forEach(header => {
+					if (element[header]) {
+						isEmpty = false;
+					}
+				});
+				if (!isEmpty) {
+					finalData.push(element);
+				}
+			});
+
+			parsedXls[name] = finalData;
+		}
+		else {
+			parsedXls[name] = data;
+		}
+
 	});
 
 	return parsedXls;
 }
 
-const getData = (lastColRow, columns, headers, sheet) => {	
+const getData = (lastColRow, columns, headers, sheet, showNullProperties) => {
 	const data = [];
 
 	for (let R = 2; R <= lastColRow; R++) {
@@ -50,6 +69,9 @@ const getData = (lastColRow, columns, headers, sheet) => {
 
 			if (cellValue) {
 				element[header] = cellValue.w ? cellValue.w : cellValue.v
+			}
+			else if (showNullProperties) {
+				element[header] = null;
 			}
 		});
 		if (Object.keys(element).length > 0) {
