@@ -8,7 +8,7 @@ Parse csv, xls, xlsx into json. Having multiple sheets is not an issue we return
 npm install xlsx-parse-json
 ````
 
-### Use node ###
+### Web Usage ###
 To use this library you need to have already the file uploaded, there are many libraries out there to select a file from your system. In the example below I provided an HTML(bootstrap) snippet and a JS snippet, of the components you need to have.
 Example
 ````
