@@ -29,6 +29,11 @@ const onLoadEvent = (binary, reader, hideEmptyRows, showNullProperties) => {
 	sheetNames.forEach(name => {
 		const sheet = workbook.Sheets[name];
 		const desiredCells = getDesiredCells(sheet);
+
+		if (!desiredCells) {
+			return parsedXls[name] = [];
+		}
+
 		const lastColRow = getLastRowCol(desiredCells);
 		const columnsAndHeaders = getColumnsAndHeaders(sheet, desiredCells);
 
